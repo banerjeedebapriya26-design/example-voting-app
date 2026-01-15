@@ -1,4 +1,4 @@
-# Testing Workflow1
+# Testing Workflow2
 # 1. Create a Resource Group 
 data "azurerm_resource_group" "rg" {
   name     = "${var.prefix}-rg"
