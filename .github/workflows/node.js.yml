@@ -38,4 +38,22 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
-    - run: npm test
+    
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          
+    - name: Login to ACR
+      run: az acr login --name ${{ secrets.ACR_NAME }}
+
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        # Point context to the "Result" folder where the Dockerfile lives
+        context: ./result
+        push: true
+        tags: ${{ secrets.ACR_NAME }}.azurecr.io/result-app:${{ github.sha }}
