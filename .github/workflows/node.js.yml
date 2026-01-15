@@ -8,12 +8,12 @@ on:
     branches: [ "main" ]
     paths:
       - 'result/**'
-      - '.github/workflows/call-docker-build-result.yaml'
+      - '.github/workflows/node.js.yml'
   pull_request:
     branches: [ "main" ]
     paths:
       - 'result/**'
-      - '.github/workflows/call-docker-build-result.yaml'
+      - '.github/workflows/node.js.yml'
 
 jobs:
   build:
