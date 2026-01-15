@@ -5,6 +5,10 @@ on:
     branches: [ "main" ]
     paths:
       - 'Terraform_Cluster/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'Terraform_Cluster/**'
   workflow_dispatch:
     inputs:
       destroy:
