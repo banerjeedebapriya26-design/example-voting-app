@@ -26,6 +26,7 @@ jobs:
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      TF_destroy: ${{ github.event.inputs.destroy || 'no' }}
 
     steps:
     - name: Checkout Code
@@ -41,7 +42,7 @@ jobs:
       run: terraform plan
 
     - name: Terraform Apply
-      if: github.event.inputs.destroy == 'no'
+      if: ${{ env.TF_destroy == 'no' }} 
       run: terraform apply -auto-approve
 
     - name: Terraform Destroy
