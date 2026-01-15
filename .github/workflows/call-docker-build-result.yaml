@@ -8,15 +8,15 @@ on:
       - 'main'
     # only build when important files change
     paths:
-      - 'result/**'
-      - '.github/workflows/call-docker-build-result.yaml'
+      - 'result12/**'
+      - '.github/workflows/call11-docker-build-result.yaml'
   pull_request:
     branches:
       - 'main'
     # only build when important files change
     paths:
-      - 'result/**'
-      - '.github/workflows/call-docker-build-result.yaml'
+      - 'result12/**'
+      - '.github/workflows/call11-docker-build-result.yaml'
 
 jobs:
   call-docker-build:
