@@ -34,7 +34,7 @@ output "kubernetes_cluster_name" {
 
 # 5. Create the Azure Container Registry
 resource "azurerm_container_registry" "acr" {
-  name                = "myuniqueacrname123" # Must be globally unique
+  name                = "dockerdemoacrname123" # Must be globally unique
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = data.azurerm_resource_group.rg.location
   sku                 = "Basic" # Cheapest option for free tier/testing
