@@ -41,6 +41,7 @@ env:
   RESOURCE_GROUP: "docker-demoapp-rg"
   CLUSTER_NAME: "docker-demoapp-aks"
   DEPLOYMENT_MANIFEST_PATH: "k8s-specifications/result-deployment.yaml"
+  SERVICE_MANIFEST_PATH: "k8s-specifications/result-service.yaml"
   CONTAINER_NAME: result-app
   
 
@@ -85,5 +86,6 @@ jobs:
         with:
           action: deploy
           manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH }}
+                     ${{ env.SERVICE_MANIFEST_PATH }} 
           images: |
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:9431724d792ebd1a78efe5a093c24743831ca45b
