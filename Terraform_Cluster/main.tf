@@ -38,7 +38,7 @@ resource "azurerm_container_registry" "acr" {
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = data.azurerm_resource_group.rg.location
   sku                 = "Standard" # Cheapest option for free tier/testing
-  admin_enabled       = false
+  admin_enabled       = true
 }
 
 # 6. ATTACH ACR TO AKS (The "AcrPull" Role)
@@ -46,5 +46,18 @@ resource "azurerm_role_assignment" "aks_to_acr" {
   principal_id                     = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
   role_definition_name             = "AcrPull"
   scope                            = azurerm_container_registry.acr.id
-  skip_service_principal_aad_check = true
+}
+
+# 2. Assign "Contributor" to the Service Principal
+resource "azurerm_role_assignment" "sp_acr_contributor" {
+  scope                = azurerm_container_registry.acr.id
+  role_definition_name = "Contributor"
+  principal_id         = "bef7f77c-681e-4be7-a4b4-16b89f53c9eb" 
+}
+
+# 3. Assign "AcrPush" to the Service Principal (For GitHub Actions Build)
+resource "azurerm_role_assignment" "sp_acr_push" {
+  scope                = azurerm_container_registry.acr.id
+  role_definition_name = "AcrPush"
+  principal_id         = "bef7f77c-681e-4be7-a4b4-16b89f53c9eb"
 }
