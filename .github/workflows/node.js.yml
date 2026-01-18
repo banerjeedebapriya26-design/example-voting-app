@@ -49,7 +49,8 @@ jobs:
           # client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
           
     - name: Login to ACR
-      run: az acr login --name ${{ secrets.ACR_NAME }}
+      run: az acr login --name dockerdemoacrname123
+      # az acr login --name ${{ secrets.ACR_NAME }} dockerdemoacrname123
 
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v5
