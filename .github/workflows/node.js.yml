@@ -67,4 +67,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-tag
-        path: image_tag.txt
+        path: ${{ github.workspace }}/image_tag.txt
