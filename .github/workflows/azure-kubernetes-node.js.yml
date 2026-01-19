@@ -45,6 +45,7 @@ jobs:
           with:
             name: build-tag
             run-id: ${{ github.event.inputs.manual_run_id || github.event.workflow_run.id }}
+            github-token: ${{ github.token }}
         
         - name: Set Tag as Env
           run: |
