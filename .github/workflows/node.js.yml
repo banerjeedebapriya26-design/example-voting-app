@@ -59,3 +59,12 @@ jobs:
         context: ./result
         push: true
         tags: ${{ secrets.ACR_NAME }}.azurecr.io/result-app:${{ github.sha }}
+
+    - name: Save Tag
+      run: echo "${{ github.sha }}" > image_tag.txt
+  
+    - name: Upload Tag Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-tag
+        path: image_tag.txt
