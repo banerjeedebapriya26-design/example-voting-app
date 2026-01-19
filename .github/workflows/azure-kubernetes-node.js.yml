@@ -12,6 +12,11 @@ on:
     types:
       - completed
   workflow_dispatch:
+    inputs:
+      manual_run_id:
+        description: 'The Run ID of the CI workflow to deploy (leave blank for latest)'
+        required: false
+        default: ''
 
 env:
   AZURE_CONTAINER_REGISTRY: "dockerdemoacrname123"
@@ -24,7 +29,8 @@ env:
 
 jobs:
   deploy:
-      if: ${{ github.event.workflow_run.conclusion == 'success' }}
+      if: github.event_name == 'workflow_dispatch' || 
+         ( github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' )
       permissions:
         actions: read
         contents: read
@@ -38,6 +44,7 @@ jobs:
           uses: actions/download-artifact@v4
           with:
             name: build-tag
+            run-id: ${{ github.event.inputs.manual_run_id || github.event.workflow_run.id }}
         
         - name: Set Tag as Env
           run: |
