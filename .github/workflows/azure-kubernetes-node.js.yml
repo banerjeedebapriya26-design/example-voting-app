@@ -52,6 +52,7 @@ jobs:
            # Read the content of the file into a variable
             IMAGE_TAG=$(cat image_tag.txt)
             echo "Deploying version: $IMAGE_TAG" 
+            echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
   
         # Logs in with your Azure credentials
         - name: Azure login
@@ -86,4 +87,4 @@ jobs:
                        ${{ env.DEPLOYMENT_MANIFEST_PATH }}
                        ${{ env.SERVICE_MANIFEST_PATH }} 
             images: |
-              ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:$IMAGE_TAG
+              ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.IMAGE_TAG }}
