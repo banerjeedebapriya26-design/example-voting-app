@@ -61,7 +61,8 @@ jobs:
         tags: ${{ secrets.ACR_NAME }}.azurecr.io/result-app:${{ github.sha }}
 
     - name: Save Tag
-      run: echo "${{ github.sha }}" > image_tag.txt
+      run: |
+           echo "${{ github.sha }}" > image_tag.txt
            ls -la image_tag.txt
   
     - name: Upload Tag Artifact
