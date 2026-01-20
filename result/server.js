@@ -8,6 +8,29 @@ var express = require('express'),
 
 var port = process.env.PORT || 4000;
 
+// A simple flag to simulate readiness (e.g., waiting for DB)
+let isReady = false;
+
+// Simulate a database connection delay of 5 seconds
+setTimeout(() => {
+  isReady = true;
+  console.log("Database connected. App is ready!");
+}, 5000);
+
+// 1. Readiness Endpoint: Used by the Load Balancer
+app.get('/ready', (req, res) => {
+  if (isReady) {
+    res.status(200).send('Ready');
+  } else {
+    res.status(503).send('Not Ready'); // 503 tells Azure: "Wait, don't send traffic!"
+  }
+});
+
+// 2. Liveness Endpoint: Used for auto-restarting
+app.get('/live', (req, res) => {
+  res.status(200).send('Alive'); // As long as the process is running, return 200
+});
+
 io.on('connection', function (socket) {
 
   socket.emit('message', { text : 'Welcome!' });
