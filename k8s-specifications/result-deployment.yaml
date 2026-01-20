@@ -24,7 +24,7 @@ spec:
           httpGet:
             path: /ready
             port: 80
-          initialDelaySeconds: 5  # Wait 5s before checking the first time
+          initialDelaySeconds: 15  # Wait 5s before checking the first time
           periodSeconds: 10       # Check every 10s
           
         livenessProbe:
