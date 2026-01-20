@@ -5,7 +5,7 @@ on:
   push:
     branches: ["main"]
     paths:
-      - 'result/**'
+      # - 'result/**'
       - '.github/workflows/azure-kubernetes-node.js.yml'
   workflow_run:
     workflows: ["Node.js CI"] # Must match the exact 'name:' of your CI file
