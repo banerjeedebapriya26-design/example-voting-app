@@ -17,8 +17,10 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write # Required to upload SARIF results
     defaults:
       run:
         working-directory: ./result
@@ -64,15 +66,31 @@ jobs:
       run: |
         docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/result-app:${{ github.sha }} .
     
-    - name: Run Trivy vulnerability scanner
+    # - name: Run Trivy vulnerability scanner
+    #   uses: aquasecurity/trivy-action@master
+    #   with:
+    #     image-ref: '${{ secrets.ACR_NAME }}.azurecr.io/result-app:${{ github.sha }}'
+    #     format: 'table'
+    #     exit-code: '1' # This crashes the pipeline if vulnerabilities are found
+    #     ignore-unfixed: true
+    #     vuln-type: 'os,library'
+    #     severity: 'CRITICAL,HIGH'
+
+    # Step 1: Run Trivy and generate SARIF file
+    - name: Run Trivy scanner (SARIF)
       uses: aquasecurity/trivy-action@master
       with:
         image-ref: '${{ secrets.ACR_NAME }}.azurecr.io/result-app:${{ github.sha }}'
-        format: 'table'
-        exit-code: '1' # This crashes the pipeline if vulnerabilities are found
-        ignore-unfixed: true
-        vuln-type: 'os,library'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
         severity: 'CRITICAL,HIGH'
+
+    # Step 2: Upload the results to GitHub Security tab
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      if: always() # Upload results even if the scan found vulnerabilities
+      with:
+        sarif_file: 'trivy-results.sarif'
     
     - name: Push to ACR
       if: success() # Only runs if the scan passes
