@@ -86,5 +86,6 @@ jobs:
             manifests: |
                        ${{ env.DEPLOYMENT_MANIFEST_PATH }}
                        ${{ env.SERVICE_MANIFEST_PATH }} 
+            annotate-namespace: false
             images: |
               ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.IMAGE_TAG }}
