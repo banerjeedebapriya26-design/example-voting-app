@@ -20,3 +20,16 @@ spec:
         ports:
         - containerPort: 80
           name: result
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80
+          initialDelaySeconds: 5  # Wait 5s before checking the first time
+          periodSeconds: 10       # Check every 10s
+          
+        livenessProbe:
+          httpGet:
+            path: /live
+            port: 80
+          initialDelaySeconds: 15 # Give the app plenty of time to start
+          periodSeconds: 20
