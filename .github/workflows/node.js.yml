@@ -52,19 +52,38 @@ jobs:
       run: az acr login --name dockerdemoacrname123
       # az acr login --name ${{ secrets.ACR_NAME }} dockerdemoacrname123
 
-    - name: Build and Push Docker Image
-      uses: docker/build-push-action@v5
+    # - name: Build and Push Docker Image
+    #   uses: docker/build-push-action@v5
+    #   with:
+    #     # Point context to the "Result" folder where the Dockerfile lives
+    #     context: ./result
+    #     push: true
+    #     tags: ${{ secrets.ACR_NAME }}.azurecr.io/result-app:${{ github.sha }}
+    
+    - name: Build Docker Image
+      run: |
+        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/result-app:${{ github.sha }} .
+    
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
       with:
-        # Point context to the "Result" folder where the Dockerfile lives
-        context: ./result
-        push: true
-        tags: ${{ secrets.ACR_NAME }}.azurecr.io/result-app:${{ github.sha }}
-
+        image-ref: '${{ secrets.ACR_NAME }}.azurecr.io/result-app:${{ github.sha }}'
+        format: 'table'
+        exit-code: '1' # This crashes the pipeline if vulnerabilities are found
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH'
+    
+    - name: Push to ACR
+      if: success() # Only runs if the scan passes
+      run: |
+        docker push ${{ secrets.ACR_NAME }}.azurecr.io/result-app:${{ github.sha }}
+        
     - name: Save Tag
       run: |
            echo "${{ github.sha }}" > image_tag.txt
            ls -la image_tag.txt
-  
+      
     - name: Upload Tag Artifact
       uses: actions/upload-artifact@v4
       with:
