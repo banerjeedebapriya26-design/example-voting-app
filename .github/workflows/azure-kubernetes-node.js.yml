@@ -2,11 +2,11 @@
 name: Deploy an app to AKS
 
 on:
-  push:
-    branches: ["main"]
-    paths:
-      # - 'result/**'
-      - '.github/workflows/azure-kubernetes-node.js.yml'
+  # push:
+  #   branches: ["main"]
+    # paths:
+    #   # - 'result/**'
+    #   - '.github/workflows/azure-kubernetes-node.js.yml'
   workflow_run:
     workflows: ["Node.js CI"] # Must match the exact 'name:' of your CI file
     types:
@@ -19,13 +19,8 @@ on:
         default: ''
 
 env:
-  AZURE_CONTAINER_REGISTRY: "dockerdemoacrname123"
-  RESOURCE_GROUP: "docker-demoapp-rg"
-  CLUSTER_NAME: "docker-demoapp-aks"
   DEPLOYMENT_MANIFEST_PATH: "k8s-specifications/result-deployment.yaml"
-  SERVICE_MANIFEST_PATH: "k8s-specifications/result-service.yaml"
-  CONTAINER_NAME: result-app
-  
+  SERVICE_MANIFEST_PATH: "k8s-specifications/result-service.yaml"  
 
 jobs:
   deploy:
@@ -73,8 +68,8 @@ jobs:
         - name: Get K8s context
           uses: azure/aks-set-context@v3
           with:
-            resource-group: ${{ env.RESOURCE_GROUP }}
-            cluster-name: ${{ env.CLUSTER_NAME }}
+            resource-group: ${{ vars.RESOURCE_GROUP }}
+            cluster-name: ${{ vars.CLUSTER_NAME }}
             admin: 'false'
             use-kubelogin: 'true'
   
@@ -88,4 +83,4 @@ jobs:
                        ${{ env.SERVICE_MANIFEST_PATH }} 
             annotate-namespace: false
             images: |
-              ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ env.IMAGE_TAG }}
+              ${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ vars.RESULT_CONTAINER_NAME }}:${{ env.IMAGE_TAG }}
