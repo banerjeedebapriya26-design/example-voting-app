@@ -7,7 +7,7 @@ metadata:
     kubernetes.io/ingress.class: webapprouting.kubernetes.azure.com
 spec:
   rules:
-  - host: result.example.com  # Your domain name
+  - host: result.4.213.223.5.nip.io  # Your domain name
     http:
       paths:
       - path: /
