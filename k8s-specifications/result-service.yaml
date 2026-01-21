@@ -1,3 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: result-app-ingress
+  annotations:
+    # This tells Kubernetes to use the NGINX controller we enabled in Step 1
+    kubernetes.io/ingress.class: webapprouting.kubernetes.azure.com
+spec:
+  rules:
+  - host: result.example.com  # Your domain name
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: result # Must match your Service name
+            port:
+              number: 80
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -10,6 +30,6 @@ spec:
   - name: "result-service"
     port: 8081
     targetPort: 80
-    nodePort: 31001
+    # nodePort: 31001
   selector:
     app: result
