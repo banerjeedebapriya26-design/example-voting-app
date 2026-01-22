@@ -32,7 +32,7 @@ metadata:
     app: result
   name: result
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .values.service.type }}
   ports:
   - name: "result-service"
     port: {{ .values.service.port }}
