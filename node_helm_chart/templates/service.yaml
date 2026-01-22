@@ -1,0 +1,61 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: result-app-ingress
+  annotations:
+    # This tells Kubernetes to use the NGINX controller we enabled in Step 1
+    kubernetes.io/ingress.class: webapprouting.kubernetes.azure.com
+spec:
+  rules:
+  - host: result.20.204.241.216.nip.io  # Your domain name
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: result # Must match your Service name
+            port:
+              number: {{ .Values.service.port }}
+      # - path: /voting        # App 2
+      #   pathType: Prefix
+      #   backend:
+      #     service:
+      #       name: voting-service
+      #       port:
+      #         number: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: result
+  name: result
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - name: "result-service"
+    port: {{ .Values.service.port }}
+    targetPort: 80
+    # nodePort: 31001
+  selector:
+    app: result
+# ---
+# apiVersion: autoscaling/v2
+# kind: HorizontalPodAutoscaler
+# metadata:
+#   name: result-app-hpa
+# spec:
+#   scaleTargetRef:
+#     apiVersion: apps/v1
+#     kind: Deployment
+#     name: result 
+#   minReplicas: 2   
+#   maxReplicas: 10 
+#   metrics:
+#   - type: Resource
+#     resource:
+#       name: cpu
+#       target:
+#         type: Utilization
+#         averageUtilization: 70 # Scale up if average CPU > 70m 
