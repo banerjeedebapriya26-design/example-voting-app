@@ -74,13 +74,18 @@ jobs:
             use-kubelogin: 'true'
   
         # Deploys application based on given manifest file
-        - name: Deploys application
-          uses: Azure/k8s-deploy@v4
-          with:
-            action: deploy
-            manifests: |
-                       ${{ env.DEPLOYMENT_MANIFEST_PATH }}
-                       ${{ env.SERVICE_MANIFEST_PATH }} 
-            annotate-namespace: false
-            images: |
-              ${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ vars.RESULT_CONTAINER_NAME }}:${{ env.IMAGE_TAG }}
+        # - name: Deploys application
+        #   uses: Azure/k8s-deploy@v4
+        #   with:
+        #     action: deploy
+        #     manifests: |
+        #                ${{ env.DEPLOYMENT_MANIFEST_PATH }}
+        #                ${{ env.SERVICE_MANIFEST_PATH }} 
+        #     annotate-namespace: false
+        #     images: |
+        #       ${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ vars.RESULT_CONTAINER_NAME }}:${{ env.IMAGE_TAG }}
+        - name: Deploy with Helm
+          run: |
+            helm upgrade --install my-release-name ./node_helm_chart \
+              --set image.tag=${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ vars.RESULT_CONTAINER_NAME }}:${{ env.IMAGE_TAG }} \
+              --set service.type=ClusterIP
