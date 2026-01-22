@@ -16,7 +16,7 @@ spec:
           service:
             name: result # Must match your Service name
             port:
-              number: {{ .Values.service.port }}
+              number: {{ .values.service.port }}
       # - path: /voting        # App 2
       #   pathType: Prefix
       #   backend:
@@ -35,7 +35,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
   - name: "result-service"
-    port: {{ .Values.service.port }}
+    port: {{ .values.service.port }}
     targetPort: 80
     # nodePort: 31001
   selector:
