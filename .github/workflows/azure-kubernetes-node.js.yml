@@ -87,5 +87,6 @@ jobs:
         - name: Deploy with Helm
           run: |
             helm upgrade --install my-release-name ./node_helm_chart \
-              --set image.tag=${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ vars.RESULT_CONTAINER_NAME }}:${{ env.IMAGE_TAG }} \
+              --set image.repository=${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ vars.RESULT_CONTAINER_NAME }} \
+              --set image.tag=${{ env.IMAGE_TAG }} \
               --set service.type=ClusterIP
