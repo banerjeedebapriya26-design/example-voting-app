@@ -2,24 +2,24 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: result
-  name: result
+    app: {{ .Values.appName }}
+  name: {{ .Values.appName }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replica }}
   selector:
     matchLabels:
-      app: result
+      app: {{ .Values.appName }}
   template:
     metadata:
       labels:
-        app: result
+        app: {{ .Values.appName }}
     spec:
       containers:
-      - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-        name: result
+      - image: {{ .Values.image.repository }}/{{ .Values.appName }}-app:{{ .Values.image.tag }}
+        name: {{ .Values.appName }}
         ports:
         - containerPort: 80
-          name: result
+          name: {{ .Values.appName }}
           
         # resources:
         #   requests:
@@ -29,16 +29,16 @@ spec:
         #     cpu: "500m"      
         #     memory: "256Mi"
             
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 80
-          initialDelaySeconds: 15  # Wait 5s before checking the first time
-          periodSeconds: 10       # Check every 10s
+        # readinessProbe:
+        #   httpGet:
+        #     path: /ready
+        #     port: 80
+        #   initialDelaySeconds: 15  # Wait 5s before checking the first time
+        #   periodSeconds: 10       # Check every 10s
           
-        livenessProbe:
-          httpGet:
-            path: /live
-            port: 80
-          initialDelaySeconds: 15 # Give the app plenty of time to start
-          periodSeconds: 20
+        # livenessProbe:
+        #   httpGet:
+        #     path: /live
+        #     port: 80
+        #   initialDelaySeconds: 15 # Give the app plenty of time to start
+        #   periodSeconds: 20
