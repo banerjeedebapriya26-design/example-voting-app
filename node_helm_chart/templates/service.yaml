@@ -1,45 +1,39 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: result-app-ingress
+  name: docker-app-ingress
   annotations:
     # This tells Kubernetes to use the NGINX controller we enabled in Step 1
     kubernetes.io/ingress.class: webapprouting.kubernetes.azure.com
 spec:
   rules:
-  - host: result.{{ .Values.ingress.ip }}.nip.io  # Your domain name
+  - host: dockerapp.{{ .Values.ingress.ip }}.nip.io  # Your domain name
     http:
       paths:
-      - path: /
+      - path: /{{ .Values.appName }}
         pathType: Prefix
         backend:
           service:
-            name: result # Must match your Service name
+            name: {{ .Values.appName }} 
             port:
               number: {{ .Values.service.port }}
-      # - path: /voting        # App 2
-      #   pathType: Prefix
-      #   backend:
-      #     service:
-      #       name: voting-service
-      #       port:
-      #         number: 8080
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: result
-  name: result
+    app: {{ .Values.appName }}
+  name: {{ .Values.appName }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-  - name: "result-service"
+  - name: "{{ .Values.appName }}-service"
     port: {{ .Values.service.port }}
-    targetPort: 80
+    targetPort: {{ .Values.container.port }}
     # nodePort: 31001
   selector:
-    app: result
+    app: {{ .Values.appName }}
 # ---
 # apiVersion: autoscaling/v2
 # kind: HorizontalPodAutoscaler
