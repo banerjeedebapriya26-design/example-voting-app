@@ -90,4 +90,4 @@ jobs:
               --set image.repository=${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ vars.RESULT_CONTAINER_NAME }} \
               --set image.tag=${{ env.IMAGE_TAG }} \
               --set service.type=ClusterIP \
-              --set ingress.ip=98.70.242.152
+              --set ingress.ip=20.204.216.45
