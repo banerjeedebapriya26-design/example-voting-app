@@ -30,7 +30,7 @@ spec:
   ports:
   - name: "{{ .Values.appName }}-service"
     port: {{ .Values.service.port }}
-    targetPort: {{ .Values.container.port }}
+    targetPort: {{ .Values.containerPort }}
     # nodePort: 31001
   selector:
     app: {{ .Values.appName }}
