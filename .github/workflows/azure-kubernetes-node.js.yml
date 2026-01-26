@@ -106,4 +106,4 @@ jobs:
             helm upgrade --install my-release-name ./node_helm_chart \
               -f ${{ env.VALUE_FILE }} \
               --set image.tag=${{ env.IMAGE_TAG }} \
-              --set ingress.ip=20.204.216.45
+              --set ingress.ip=135.235.180.224
