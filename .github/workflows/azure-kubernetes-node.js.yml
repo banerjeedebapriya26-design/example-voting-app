@@ -8,15 +8,24 @@ on:
     #   # - 'result/**'
     #   - '.github/workflows/azure-kubernetes-node.js.yml'
   workflow_run:
-    workflows: ["Node.js CI"] # Must match the exact 'name:' of your CI file
+    workflows:  ["Node.js CI", "PythonCI pipeline"]
     types:
       - completed
+    branches: [main]
   workflow_dispatch:
     inputs:
       manual_run_id:
         description: 'The Run ID of the CI workflow to deploy (leave blank for latest)'
-        required: false
+        required: true
         default: ''
+      app_type:
+              description: 'Select the application to deploy'
+              required: true
+              default: 'node'
+              type: choice
+              options:
+                - node
+                - python
 
 env:
   DEPLOYMENT_MANIFEST_PATH: "k8s-specifications/result-deployment.yaml"
@@ -42,13 +51,24 @@ jobs:
             run-id: ${{ github.event.inputs.manual_run_id || github.event.workflow_run.id }}
             github-token: ${{ github.token }}
         
-        - name: Set Tag as Env
+        # - name: Set Tag as Env
+        #   run: |
+        #    # Read the content of the file into a variable
+        #     IMAGE_TAG=$(cat image_tag.txt)
+        #     echo "Deploying version: $IMAGE_TAG" 
+        #     echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+            
+        - name: Set Deployment Variables
           run: |
-           # Read the content of the file into a variable
             IMAGE_TAG=$(cat image_tag.txt)
-            echo "Deploying version: $IMAGE_TAG" 
+            echo "Deploying version: $IMAGE_TAG"
             echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
-  
+            if [[ "${{ github.event.workflow_run.name }}" == "Node.js CI" || "${{ github.event.inputs.app_type }}" == "node" ]]; then
+              echo "VALUE_FILE=./node_helm_chart/templates/node-values.yaml" >> $GITHUB_ENV
+            elif [[ "${{ github.event.workflow_run.name }}" == "PythonCI pipeline" || "${{ github.event.inputs.app_type }}" == "python" ]]; then
+              echo "VALUE_FILE=./node_helm_chart/templates/python-values.yaml" >> $GITHUB_ENV
+            fi
+
         # Logs in with your Azure credentials
         - name: Azure login
           uses: azure/login@v1.4.6
@@ -87,7 +107,6 @@ jobs:
         - name: Deploy with Helm
           run: |
             helm upgrade --install my-release-name ./node_helm_chart \
-              --set image.repository=${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ vars.RESULT_CONTAINER_NAME }} \
+              -f ${{ env.VALUE_FILE }} \
               --set image.tag=${{ env.IMAGE_TAG }} \
-              --set service.type=ClusterIP \
               --set ingress.ip=20.204.216.45
