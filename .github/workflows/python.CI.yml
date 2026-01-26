@@ -1,6 +1,6 @@
 # This workflow will build and push a Python application to an Azure Kubernetes when a commit is pushed to your default branch.
 
-name: Build and deploy Python app to Azure Web App
+name: PythonCI pipeline
 
 env:
   AZURE_WEBAPP_NAME: your-app-name  # set this to the name of your Azure Web App
