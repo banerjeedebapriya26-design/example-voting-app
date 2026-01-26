@@ -1,0 +1,11 @@
+image:
+  repository: dockerdemoacrname123.azurecr.io
+  tag: latest
+service:
+  type: ClusterIP
+  port: 8080
+ingress:
+  ip: 98.70.242.152
+appName: vote
+containerPort: 80
+replica: 1
