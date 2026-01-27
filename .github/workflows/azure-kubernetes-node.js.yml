@@ -62,8 +62,10 @@ jobs:
             echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
             if [[ "${{ github.event.workflow_run.name }}" == "Node.js CI" || "${{ github.event.inputs.app_type }}" == "node" ]]; then
               echo "VALUE_FILE=./node_helm_chart/node-values.yaml" >> $GITHUB_ENV
+              echo "RELEASE_NAME=node-release" >> $GITHUB_ENV
             elif [[ "${{ github.event.workflow_run.name }}" == "PythonCI pipeline" || "${{ github.event.inputs.app_type }}" == "python" ]]; then
               echo "VALUE_FILE=./node_helm_chart/python-values.yaml" >> $GITHUB_ENV
+              echo "RELEASE_NAME=python-release" >> $GITHUB_ENV
             fi
 
         # Logs in with your Azure credentials
@@ -103,7 +105,7 @@ jobs:
         #       ${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ vars.RESULT_CONTAINER_NAME }}:${{ env.IMAGE_TAG }}
         - name: Deploy with Helm
           run: |
-            helm upgrade --install my-release-name ./node_helm_chart \
+            helm upgrade --install ${{ env.RELEASE_NAME }} ./node_helm_chart \
               -f ${{ env.VALUE_FILE }} \
               --set image.tag=${{ env.IMAGE_TAG }} \
               --set ingress.ip=135.235.180.224
