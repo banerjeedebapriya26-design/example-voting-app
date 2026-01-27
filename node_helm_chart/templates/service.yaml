@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: docker-app-ingress
+  name: {{ .Release.Name }}-ingress
   annotations:
     # This tells Kubernetes to use the NGINX controller we enabled in Step 1
     kubernetes.io/ingress.class: webapprouting.kubernetes.azure.com
@@ -24,7 +24,7 @@ kind: Service
 metadata:
   labels:
     app: {{ .Values.appName }}
-  name: {{ .Values.appName }}
+  name: {{ .Release.Name }}-{{ .Values.appName }}
 spec:
   type: {{ .Values.service.type }}
   ports:
