@@ -1,0 +1,111 @@
+# This workflow will push an application to a Azure Kubernetes Service (AKS) cluster when you push your code
+name: Deploy an app to AKS
+
+on:
+  # push:
+  #   branches: ["main"]
+    # paths:
+    #   # - 'result/**'
+    #   - '.github/workflows/azure-kubernetes-node.js.yml'
+  workflow_run:
+    workflows:  ["Node.js CI", "PythonCI pipeline"]
+    types:
+      - completed
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      manual_run_id:
+        description: 'The Run ID of the CI workflow to deploy (leave blank for latest)'
+        required: true
+        default: ''
+      app_type:
+              description: 'Select the application to deploy'
+              required: true
+              default: 'node'
+              type: choice
+              options:
+                - node
+                - python
+
+
+jobs:
+  deploy:
+      if: github.event_name == 'workflow_dispatch' || 
+         ( github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' )
+      permissions:
+        actions: read
+        contents: read
+        id-token: write
+      runs-on: ubuntu-latest
+      steps:
+        # Checks out the repository this file is in
+        - uses: actions/checkout@v4
+  
+        - name: Download Tag Artifact
+          uses: actions/download-artifact@v4
+          with:
+            name: build-tag
+            run-id: ${{ github.event.inputs.manual_run_id || github.event.workflow_run.id }}
+            github-token: ${{ github.token }}
+        
+        # - name: Set Tag as Env
+        #   run: |
+        #    # Read the content of the file into a variable
+        #     IMAGE_TAG=$(cat image_tag.txt)
+        #     echo "Deploying version: $IMAGE_TAG" 
+        #     echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+            
+        - name: Set Deployment Variables
+          run: |
+            IMAGE_TAG=$(cat image_tag.txt)
+            echo "Deploying version: $IMAGE_TAG"
+            echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+            if [[ "${{ github.event.workflow_run.name }}" == "Node.js CI" || "${{ github.event.inputs.app_type }}" == "node" ]]; then
+              echo "VALUE_FILE=./node_helm_chart/node-values.yaml" >> $GITHUB_ENV
+              echo "RELEASE_NAME=node-release" >> $GITHUB_ENV
+            elif [[ "${{ github.event.workflow_run.name }}" == "PythonCI pipeline" || "${{ github.event.inputs.app_type }}" == "python" ]]; then
+              echo "VALUE_FILE=./node_helm_chart/python-values.yaml" >> $GITHUB_ENV
+              echo "RELEASE_NAME=python-release" >> $GITHUB_ENV
+            fi
+
+        # Logs in with your Azure credentials
+        - name: Azure login
+          uses: azure/login@v1.4.6
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+            # client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            # tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            # subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  
+        # Use kubelogin to configure your kubeconfig for Azure auth
+        - name: Set up kubelogin for non-interactive login
+          uses: azure/use-kubelogin@v1
+          with:
+            kubelogin-version: 'v0.0.25'
+  
+        # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
+        - name: Get K8s context
+          uses: azure/aks-set-context@v3
+          with:
+            resource-group: ${{ vars.RESOURCE_GROUP }}
+            cluster-name: ${{ vars.CLUSTER_NAME }}
+            admin: 'false'
+            use-kubelogin: 'true'
+  
+        # Deploys application based on given manifest file
+        # - name: Deploys application
+        #   uses: Azure/k8s-deploy@v4
+        #   with:
+        #     action: deploy
+        #     manifests: |
+        #                ${{ env.DEPLOYMENT_MANIFEST_PATH }}
+        #                ${{ env.SERVICE_MANIFEST_PATH }} 
+        #     annotate-namespace: false
+        #     images: |
+        #       ${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ vars.RESULT_CONTAINER_NAME }}:${{ env.IMAGE_TAG }}
+        - name: Deploy with Helm
+          run: |
+            helm upgrade --install ${{ env.RELEASE_NAME }} ./node_helm_chart \
+              -f ${{ env.VALUE_FILE }} \
+              --set image.tag=${{ env.IMAGE_TAG }} \
+              --set ingress.ip=135.235.179.64
