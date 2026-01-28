@@ -106,5 +106,10 @@ jobs:
         - name: Deploy with Helm
           run: |
             helm upgrade --install ${{ env.RELEASE_NAME }} ${{ env.HELM_CHART}} \
-              --set image.tag=${{ env.IMAGE_TAG }} \
-              --set ingress.ip=135.235.182.18
+              --set image.tag=${{ env.IMAGE_TAG }} 
+              
+          # 3. Deploy Shared Ingress (linking them together)
+        - name: Deploy Networking
+          run: |
+            helm upgrade --install relaese-ingress ./ingress-helm-chart\
+            --set ingress.ip=135.235.182.18
