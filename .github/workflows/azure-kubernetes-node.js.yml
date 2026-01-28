@@ -111,5 +111,5 @@ jobs:
           # 3. Deploy Shared Ingress (linking them together)
         - name: Deploy Networking
           run: |
-            helm upgrade --install relaese-ingress ./ingress-helm-chart\
+            helm upgrade --install relaese-ingress ./ingress-helm-chart \
             --set ingress.ip=135.235.182.18
