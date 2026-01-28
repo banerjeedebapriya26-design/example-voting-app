@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.python.appName }}
+  name: {{ .Release.Name }}-{{ .Values.python.appName }}
+spec:
+  replicas: {{ .Values.python.replica }}
+  selector:
+    matchLabels:
+      app: {{ .Values.python.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.python.appName }}
+    spec:
+      containers:
+      - image: {{ .Values.global.image.repository }}/{{ .Values.python.appName }}-app:{{ .Values.python.tag }}
+        name: {{ .Values.python.appName }}
+        ports:
+        - containerPort: 80
+          name: {{ .Values.python.appName }}
+          
+        # resources:
+        #   requests:
+        #     cpu: "100m"      
+        #     memory: "128Mi"
+        #   limits:
+        #     cpu: "500m"      
+        #     memory: "256Mi"
+            
+        # readinessProbe:
+        #   httpGet:
+        #     path: /ready
+        #     port: 80
+        #   initialDelaySeconds: 15  # Wait 5s before checking the first time
+        #   periodSeconds: 10       # Check every 10s
+          
+        # livenessProbe:
+        #   httpGet:
+        #     path: /live
+        #     port: 80
+        #   initialDelaySeconds: 15 # Give the app plenty of time to start
+        #   periodSeconds: 20

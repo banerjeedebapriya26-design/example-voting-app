@@ -1,0 +1,11 @@
+apiVersion: v2
+name: voting-umbrella
+description: Umbrella chart for Node and Python apps
+version: 1.0.0
+dependencies:
+  - name: node
+    version: "0.1.0"
+    repository: "file://./charts/node"
+  - name: python
+    version: "0.1.0"
+    repository: "file://./charts/python"

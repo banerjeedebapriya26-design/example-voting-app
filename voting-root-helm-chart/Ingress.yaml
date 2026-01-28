@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-ingress
+  annotations:
+    # This tells Kubernetes to use the NGINX controller we enabled in Step 1
+    kubernetes.io/ingress.class: webapprouting.kubernetes.azure.com
+spec:
+  rules:
+  - host: {{ .Values.python.appName }}.{{ .Values.global.ingress.ip }}.nip.io  # Your domain name
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-{{ .Values.python.appName }}
+            port:
+              number: {{ .Values.python.service.port }}
+  - host: {{ .Values.node.appName }}.{{ .Values.global.ingress.ip }}.nip.io  # Your domain name
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-{{ .Values.node.appName }}
+            port:
+              number: {{ .Values.node.service.port }}
