@@ -1,8 +1,11 @@
-# image:
-#   repository: dockerdemoacrname123.azurecr.io/result-app
-#   tag: latest
-# service:
-#   type: ClusterIP
-#   port: 8081
-# ingress:
-#   ip: 98.70.242.152
+image:
+  repository: dockerdemoacrname123.azurecr.io
+  tag: latest
+service:
+  type: ClusterIP
+  port: 8081
+ingress:
+  ip: 98.70.242.152
+appName: result
+containerPort: 80
+replica: 1
