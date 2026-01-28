@@ -91,6 +91,12 @@ jobs:
             cluster-name: ${{ vars.CLUSTER_NAME }}
             admin: 'false'
             use-kubelogin: 'true'
+
+        - name: Get Azure Ingress IP
+          id: get_ip
+          run: |
+            IP=$(kubectl get svc -n app-routing-system -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}')
+            echo "INGRESS_IP=$IP" >> $GITHUB_ENV
   
         # Deploys application based on given manifest file
         # - name: Deploys application
@@ -112,4 +118,4 @@ jobs:
         - name: Deploy Networking
           run: |
             helm upgrade --install relaese-ingress ./ingress-helm-chart \
-            --set ingress.ip=135.235.182.18
+            --set ingress.ip=${{ env.INGRESS_IP }}
