@@ -9,3 +9,4 @@ ingress:
 appName: vote
 containerPort: 80
 replica: 1
+DATABASE_URL: postgres://postgres:password@postgres-db-postgresql:5432/postgres
