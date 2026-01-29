@@ -106,7 +106,7 @@ jobs:
 
         - name: Postgress Deploy with Helm
           run: |
-            helm upgrade --install POSTGRESS-RELEASE ./postgress_helm_chart
+            helm upgrade --install postgress-release ./postgress_helm_chart
             
         - name: App Deploy with Helm
           run: |
