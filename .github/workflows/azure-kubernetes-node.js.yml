@@ -113,9 +113,15 @@ jobs:
           run: |
             helm upgrade --install ${{ env.RELEASE_NAME }} ${{ env.HELM_CHART}} \
               --set image.tag=${{ env.IMAGE_TAG }} 
-              
+
+        - name: Get Azure Ingress IP
+          id: get_ip
+          run: |
+            IP=$(kubectl get svc -n app-routing-system -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}')
+            echo "INGRESS_IP=$IP" >> $GITHUB_ENV
+                
           # 3. Deploy Shared Ingress (linking them together)
         - name: Deploy Networking
           run: |
-            helm upgrade --install relaese-ingress ./ingress-helm-chart \
+            helm upgrade --install release-ingress ./ingress-helm-chart \
             --set ingress.ip=${{ env.INGRESS_IP }}
