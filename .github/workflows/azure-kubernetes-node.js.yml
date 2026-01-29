@@ -103,7 +103,12 @@ jobs:
         #     annotate-namespace: false
         #     images: |
         #       ${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ vars.RESULT_CONTAINER_NAME }}:${{ env.IMAGE_TAG }}
-        - name: Deploy with Helm
+
+        - name: Postgress Deploy with Helm
+          run: |
+            helm upgrade --install RELEASE_POSTGRESS ./postgress_helm_chart
+            
+        - name: App Deploy with Helm
           run: |
             helm upgrade --install ${{ env.RELEASE_NAME }} ${{ env.HELM_CHART}} \
               --set image.tag=${{ env.IMAGE_TAG }} 
