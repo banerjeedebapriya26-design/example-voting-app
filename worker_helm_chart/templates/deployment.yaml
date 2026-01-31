@@ -17,9 +17,6 @@ spec:
       containers:
       - image: {{ .Values.image.repository }}/{{ .Values.appName }}-app:{{ .Values.image.tag }}
         name: {{ .Values.appName }}
-        ports:
-        - containerPort: 80
-          name: {{ .Values.appName }}
     env: 
     # Redis Connection (Source)
         - name: REDIS_HOST

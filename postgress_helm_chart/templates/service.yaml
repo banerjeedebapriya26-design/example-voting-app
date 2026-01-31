@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  # This name must match what you use in your app's DB_HOST environment variable
+  name: {{ .Release.Name }}-postgresql
+  labels:
+    app: postgresql
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5432
+    targetPort: 5432
+    protocol: TCP
+    name: postgres
+  selector:
+    # This MUST match the labels defined in your StatefulSet's 'spec.template.metadata.labels'
+    app: postgresql
