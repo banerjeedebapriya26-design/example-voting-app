@@ -1,2 +1,2 @@
-postgresPassword: "your-secure-password"
+postgresPassword: "password123"
 # Optional: storage and image configs
