@@ -107,6 +107,10 @@ jobs:
         - name: Postgress Deploy with Helm
           run: |
             helm upgrade --install postgress-release ./postgress_helm_chart
+
+        - name: Postgress Deploy with Helm
+          run: |
+            helm upgrade --install redis-release ./redis_helm_chart
             
         - name: App Deploy with Helm
           run: |
