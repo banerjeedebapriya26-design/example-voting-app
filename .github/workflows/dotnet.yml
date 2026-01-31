@@ -1,0 +1,62 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET_CI
+
+on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
+  workflow_dispatch: 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./worker
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+      
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+            
+    - name: Login to ACR
+      run: az acr login --name ${{ secrets.ACR_NAME }}
+      # az acr login --name ${{ secrets.ACR_NAME }} dockerdemoacrname123
+
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        # Point context to the "worker" folder where the Dockerfile lives
+        context: ./worker
+        push: true
+        tags: ${{ secrets.ACR_NAME }}.azurecr.io/worker-app:${{ github.sha }}
+    
+    - name: Push to ACR
+      # if: success() # Only runs if the scan passes
+      run: |
+        docker push ${{ secrets.ACR_NAME }}.azurecr.io/worker-app:${{ github.sha }}
+        
+    - name: Save Tag
+      run: |
+           echo "${{ github.sha }}" > image_tag.txt
+           ls -la image_tag.txt
+      
+    - name: Upload Tag Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-tag
+        path: worker/image_tag.txt
