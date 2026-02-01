@@ -37,13 +37,14 @@ jobs:
       run: az acr login --name ${{ secrets.ACR_NAME }}
       # az acr login --name ${{ secrets.ACR_NAME }} dockerdemoacrname123
 
-    - name: Build and Push Docker Image
+    - name: Build Image
       uses: docker/build-push-action@v5
       with:
         # Point context to the "worker" folder where the Dockerfile lives
         context: ./worker
         push: true
         tags: ${{ secrets.ACR_NAME }}.azurecr.io/worker-app:${{ github.sha }}
+        platforms: linux/amd64,linux/arm64
     
     - name: Push to ACR
       # if: success() # Only runs if the scan passes
