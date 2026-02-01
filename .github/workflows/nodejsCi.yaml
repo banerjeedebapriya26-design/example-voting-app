@@ -6,6 +6,8 @@ on:
 #     branches: [ "main" ]
 #   pull_request:
 #     branches: [ "main" ]
+env:
+  K8S_PATH: "k8s-harsh/deployment.yaml"
 
 jobs:
   build:
@@ -52,9 +54,6 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: .
 
     steps:
     - name: Azure Login
@@ -73,6 +72,6 @@ jobs:
       with:
         action: deploy
         manifests: |
-          k8s-harsh/deployment.yaml
+            ${{ env.K8S_PATH }}
         images: |
           examplevotingapp123.azurecr.io/harsh-app:${{ github.sha }}
