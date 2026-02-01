@@ -52,6 +52,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./k8s-harsh
 
     steps:
     - name: Azure Login
@@ -70,6 +73,6 @@ jobs:
       with:
         action: deploy
         manifests: |
-          k8s-harsh/deployment.yaml
+          deployment.yaml
         images: |
           examplevotingapp123.azurecr.io/harsh-app:${{ github.sha }}
