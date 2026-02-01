@@ -44,7 +44,7 @@ jobs:
         context: ./worker
         push: true
         tags: ${{ secrets.ACR_NAME }}.azurecr.io/worker-app:${{ github.sha }}
-        platforms: linux/amd64,linux/arm64
+        platforms: linux/amd64
     
     - name: Push to ACR
       # if: success() # Only runs if the scan passes
