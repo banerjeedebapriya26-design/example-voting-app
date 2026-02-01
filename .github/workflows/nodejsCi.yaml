@@ -35,3 +35,16 @@ jobs:
 
     - name: Run build
       run: npm run build --if-present
+
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Login to ACR
+      run: az acr login --name examplevotingapp123
+
+    - name: Build and Push Docker Image
+      run: |
+        docker build -t examplevotingapp123.azurecr.io/harsh-app:${{ github.sha }} .
+        docker push examplevotingapp123.azurecr.io/harsh-app:${{ github.sha }}
