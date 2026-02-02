@@ -8,7 +8,7 @@ on:
     #   # - 'result/**'
     #   - '.github/workflows/azure-kubernetes-node.js.yml'
   workflow_run:
-    workflows:  ["Node.js CI", "PythonCI pipeline"]
+    workflows:  ["Node.js CI", "PythonCI pipeline" , ".NET_CI"]
     types:
       - completed
     branches: [main]
