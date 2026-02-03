@@ -1,7 +1,7 @@
 var express = require('express'),
     async = require('async'),
     { Pool } = require('pg'),
-    path = require('path'), // Added path for resolving index.html
+    // path = require('path'), // Added path for resolving index.html
     cookieParser = require('cookie-parser'),
     app = express(),
     server = require('http').Server(app),
@@ -25,18 +25,18 @@ var pool = new Pool({
 let isReady = false;
 
 // 1. Readiness Endpoint
-app.get('/ready', (req, res) => {
-  if (isReady) {
-    res.status(200).send('Ready');
-  } else {
-    res.status(503).send('Not Ready');
-  }
-});
+// app.get('/ready', (req, res) => {
+//   if (isReady) {
+//     res.status(200).send('Ready');
+//   } else {
+//     res.status(503).send('Not Ready');
+//   }
+// });
 
-// 2. Liveness Endpoint
-app.get('/live', (req, res) => {
-  res.status(200).send('Alive');
-});
+// // 2. Liveness Endpoint
+// app.get('/live', (req, res) => {
+//   res.status(200).send('Alive');
+// });
 
 async.retry(
   {times: 1000, interval: 1000},
