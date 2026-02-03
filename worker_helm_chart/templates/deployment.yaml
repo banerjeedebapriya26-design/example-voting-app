@@ -26,7 +26,7 @@ spec:
         
     # Postgres Connection (Destination)
         - name: POSTGRES_HOST
-          value: "postgress-release-postgresql"
+          value: "postgress-release-postgresql.default.svc.cluster.local"
         - name: POSTGRES_PORT
           value: "5432"
         - name: POSTGRES_USER
