@@ -17,25 +17,25 @@ spec:
       containers:
       - image: {{ .Values.image.repository }}/{{ .Values.appName }}-app:{{ .Values.image.tag }}
         name: {{ .Values.appName }}
-      env: 
-      # Redis Connection (Source)
-          - name: REDIS_HOST
-            value: "redis-release-redis"
-          - name: REDIS_PORT
-            value: "6379"
-          
-      # Postgres Connection (Destination)
-          - name: POSTGRES_HOST
-            value: "postgress-release-postgresql.default.svc.cluster.local"
-          - name: POSTGRES_PORT
-            value: "5432"
-          - name: POSTGRES_USER
-            value: "postgres"
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: postgress-release-postgres-secret
-                key: password
+        env: 
+        # Redis Connection (Source)
+            - name: REDIS_HOST
+              value: "redis-release-redis"
+            - name: REDIS_PORT
+              value: "6379"
+            
+        # Postgres Connection (Destination)
+            - name: POSTGRES_HOST
+              value: "postgress-release-postgresql.default.svc.cluster.local"
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgress-release-postgres-secret
+                  key: password
           
         # resources:
         #   requests:
