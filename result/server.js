@@ -7,7 +7,7 @@ var express = require('express'),
     server = require('http').Server(app),
     io = require('socket.io')(server);
 
-var port = process.env.PORT || 4000;
+var port = process.env.PORT || 80;
 
 // Grab environment variables from Kubernetes
 const pgUser = process.env.POSTGRES_USER || 'postgres';
@@ -89,7 +89,6 @@ app.get('/', function (req, res) {
   res.sendFile(path.resolve(__dirname + '/views/index.html'));
 });
 
-server.listen(port, function () {
-  var port = server.address().port;
+server.listen(port, "0.0.0.0", function () {
   console.log('App running on port ' + port);
 });
