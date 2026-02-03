@@ -67,7 +67,7 @@ jobs:
             elif [[ "${{ github.event.workflow_run.name }}" == "PythonCI pipeline" || "${{ github.event.inputs.app_type }}" == "python" ]]; then
               echo "HELM_CHART=./python_helm_chart" >> $GITHUB_ENV
               echo "RELEASE_NAME=python-release" >> $GITHUB_ENV
-            elif [[ "${{ github.event.workflow_run.name }}" == ".NET_CI" || "${{ github.event.inputs.app_type }}" == "python" ]]; then
+            elif [[ "${{ github.event.workflow_run.name }}" == ".NET_CI" || "${{ github.event.inputs.app_type }}" == ".net" ]]; then
               echo "HELM_CHART=./worker_helm_chart" >> $GITHUB_ENV
               echo "RELEASE_NAME=worker-release" >> $GITHUB_ENV
             fi
