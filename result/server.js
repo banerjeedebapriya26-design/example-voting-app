@@ -1,7 +1,7 @@
 var express = require('express'),
     async = require('async'),
     { Pool } = require('pg'),
-    // path = require('path'), // Added path for resolving index.html
+    path = require('path'), // Added path for resolving index.html
     cookieParser = require('cookie-parser'),
     app = express(),
     server = require('http').Server(app),
@@ -82,7 +82,7 @@ function collectVotesFromResult(result) {
 }
 
 app.use(cookieParser());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/views'));
 
 app.get('/', function (req, res) {
